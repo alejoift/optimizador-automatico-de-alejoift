@@ -2,6 +2,6 @@
 el autor de este archivo no se hace responsable de cualquier dano que pueda sufrir su computador por la utilizacion de esta herramienta, utilizelo bajo su propia responsabilidad.
 
 <p align="center">
-<img src="https://github.com/alejoift/optimizador-automatico-de-alejoift/blob/main/recurso/ut.png" width="800">
+<img src="https://github.com/alejoift/optimizador-automatico-de-alejoift/blob/main/recursos/ut.png" width="800">
 </p>
 
