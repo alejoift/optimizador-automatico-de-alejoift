@@ -13,7 +13,7 @@ Esta es una herramienta la cual esta hecha para optimizar windows y obtener el m
 windows 10 y windows 11.
 
 ## 🫆INSTRUCCIONES
--descargan el .bat de [descargas](https://github.com/alejoift/optimizador-automatico-de-alejoift/releases) y lo ejecutan.
+descargan el .bat de [descargas](https://github.com/alejoift/optimizador-automatico-de-alejoift/releases) y lo ejecutan.
 
 ## 🧑‍💻COMUNIDAD
 Aqui puedes unirte a mi comunidad [alejo community](https://discord.gg/VRGFBNr2Nf),si les apasiona todo este mundo del gaming y las optimizaciones de pc se pueden unir.
