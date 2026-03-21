@@ -46,7 +46,7 @@ echo                                   %a%██║  ██║██████
 echo                                   %a%╚═╝  ╚═╝╚══════╝╚══════╝ ╚════╝  ╚═════╝ ╚═╝╚═╝        ╚═╝      %a%  
 echo.                           
 
-echo                                                            Version: 0.1 %                                  
+echo                                                            Version: 0.1.1 %                                  
 echo.
 echo.
 echo.
@@ -54,7 +54,7 @@ echo                                          [1]nvidia inspector               
 echo.
 echo                                          [2]plan de energia     
 echo.  
-echo                                          [3]timer resolution                      
+echo                                          [3]timer resolution (en proceso)                      
 
 
 
@@ -176,48 +176,4 @@ pause
 echo se ha liberado el espacio se reiniciara el sistema.
 shutdown /r /f /t 0
 
-:timer
-cls
-echo.
-@echo off
-echo Aplicando Timer Resolution 0.5ms...
 
-:: Crear carpeta
-if not exist "C:\timerresolution\" mkdir "C:\timerresolution\"
-
-:: Descargar ZIP (URL corregida)
-curl -L -o "%temp%\timerresolution.zip" "https://github.com/alejoift/optimizador-automatico-de-alejoift/raw/main/recursos/timerresolution.zip" >> TR_Log.txt
-
-:: Verificar descarga
-if not exist "%temp%\timerresolution.zip" (
-    echo Error al descargar Timer Resolution >> TR_Log.txt
-    exit
-)
-
-:: Extraer
-powershell -NoProfile Expand-Archive "%temp%\timerresolution.zip" -DestinationPath "C:\timerresolution\" -Force >> TR_Log.txt
-
-:: Buscar el exe automáticamente
-set exePath=C:\timerresolution\SetTimerResolution.exe
-
-if not exist "%exePath%" (
-    for /r "C:\timerresolution\" %%f in (SetTimerResolution.exe) do set exePath=%%f
-)
-
-:: Verificar exe
-if not exist "%exePath%" (
-    echo No se encontro el exe de Timer Resolution >> TR_Log.txt
-    exit
-)
-
-:: Crear VBS oculto
-echo Set WshShell = CreateObject("WScript.Shell") > "C:\timerresolution\start_hidden.vbs"
-echo WshShell.Run "%exePath% 0.5", 0 >> "C:\timerresolution\start_hidden.vbs"
-
-:: Ejecutar ahora
-start "" "C:\timerresolution\start_hidden.vbs"
-
-:: Agregar al inicio
-copy "C:\timerresolution\start_hidden.vbs" "%appdata%\Microsoft\Windows\Start Menu\Programs\Startup\" /Y >> TR_Log.txt
-
-timeout /t 3 /nobreak >nul
