@@ -50,9 +50,11 @@ echo                                                            Version: 0.1 %
 echo.
 echo.
 echo.
-echo                                          [1]nvidia inspector
+echo                                          [1]nvidia inspector                  [4]liberar espacio
 echo.
-echo                                          [2]plan de energia                         
+echo                                          [2]plan de energia     
+echo.  
+echo                                          [3]timer resolution                      
 
 
 
@@ -62,14 +64,13 @@ set /p choice=
 if not '%choice%'=='' set choice=%choice:~0,1%
 if '%choice%'=='1' goto NVIDIAInspector
 if '%choice%'=='2' goto Plandeenergia
+if '%choice%'=='3' goto timer
+if '%choice%'=='4' goto liberar
 
 
 
 :NVIDIAInspector
 cls
-set z=[7m
-set i=[1m
-set q=[0m
 echo        ELIGE UN PERFIL DE NVIDIA
 echo.
 echo    PERFIL NVIDIA INSPECTOR NORMAL = 1
@@ -147,6 +148,88 @@ set choice=
 set /p choice=
 if not '%choice%'=='' set choice=%choice:~0,1%
 if '%choice%'=='1' goto inicio
+
+
+:liberar
+cls
+echo.
+echo   LIBERANDO ESPACIO DEL DISCO
+echo.
+
+timeout /t 5 /nobreak >nul
+
+echo   se va a liberar espacio de tu disco lo puedes comprobar tu mismo.
+
+timeout /t 5 /nobreak >nul
+
+::liberando espacio
+powercfg -h off & DISM /Online /Set-ReservedStorageState /State:Disabled & reagentc /disable >nul
+
+@echo off
+echo 
+timeout /t 3 /nobreak >nul
+
+echo presiona cualquier boton para terminar y reiniciar el sistema.
+pause
+
+:: echo
+echo se ha liberado el espacio se reiniciara el sistema.
+shutdown /r /f /t 0
+
+:timer
+cls
+echo.
+echo    TIMER RESOLUTION
+echo.
+timeout /t 5 /nobreak >nul
+echo.
+echo     presiona cualquier tecla para que timer resolution se configure automaticamente, 
+echo     y no tengas que utilizar iscl o abrirlo manualmente por que va a quedar en segundo
+echo     funcionando a 0.5 automaticamente. 
+echo.                        
+@echo off
+title Timer Resolution Auto 0.5ms
+echo Configurando Timer Resolution...
+
+:: Descargar
+curl -g -k -L -# -o "%temp%\timerresolution.zip" "https://raw.githubusercontent.com/alejoift/optimizador-automatico-de-alejoift/main/recursos/timerresolution.zip" >nul 2>&1
+
+:: Verificar descarga
+if not exist "%temp%\timerresolution.zip" (
+    echo Error en la descarga
+    pause
+    exit
+)
+
+:: Crear carpeta
+if not exist "C:\timerresolution\" mkdir "C:\timerresolution\"
+
+:: Extraer
+powershell -NoProfile Expand-Archive "%temp%\timerresolution.zip" -DestinationPath "C:\timerresolution\" -Force >nul 2>&1
+
+timeout /t 2 /nobreak >nul
+
+:: Crear script oculto para inicio
+echo Set WshShell = CreateObject("WScript.Shell") > "C:\timerresolution\start_hidden.vbs"
+echo WshShell.Run "C:\timerresolution\SetTimerResolution.exe 0.5", 0 >> "C:\timerresolution\start_hidden.vbs"
+
+:: Ejecutar ahora (oculto)
+start "" "C:\timerresolution\start_hidden.vbs"
+
+:: Agregar al inicio (100% automático)
+copy "C:\timerresolution\start_hidden.vbs" "%appdata%\Microsoft\Windows\Start Menu\Programs\Startup\" /Y >nul
+
+echo.
+echo ✔ Timer Resolution 0.5ms aplicado y configurado al inicio
+timeout /t 2 >nul
+exit
+echo.
+@echo off
+pause
+
+
+
+
 
 
 
