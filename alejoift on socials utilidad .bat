@@ -179,62 +179,45 @@ shutdown /r /f /t 0
 :timer
 cls
 echo.
-echo    TIMER RESOLUTION
-echo.
-timeout /t 5 /nobreak >nul
-echo.
-echo     presiona cualquier tecla para que timer resolution se configure automaticamente, 
-echo     y no tengas que utilizar iscl o abrirlo manualmente por que va a quedar en segundo
-echo     funcionando a 0.5 automaticamente. 
-echo.                        
 @echo off
-title Timer Resolution Auto 0.5ms
-echo Configurando Timer Resolution...
-
-:: Descargar
-curl -g -k -L -# -o "%temp%\timerresolution.zip" "https://raw.githubusercontent.com/alejoift/optimizador-automatico-de-alejoift/main/recursos/timerresolution.zip" >nul 2>&1
-
-:: Verificar descarga
-if not exist "%temp%\timerresolution.zip" (
-    echo Error en la descarga
-    pause
-    exit
-)
+echo Aplicando Timer Resolution 0.5ms...
 
 :: Crear carpeta
 if not exist "C:\timerresolution\" mkdir "C:\timerresolution\"
 
+:: Descargar ZIP (URL corregida)
+curl -L -o "%temp%\timerresolution.zip" "https://github.com/alejoift/optimizador-automatico-de-alejoift/raw/main/recursos/timerresolution.zip" >> TR_Log.txt
+
+:: Verificar descarga
+if not exist "%temp%\timerresolution.zip" (
+    echo Error al descargar Timer Resolution >> TR_Log.txt
+    exit
+)
+
 :: Extraer
-powershell -NoProfile Expand-Archive "%temp%\timerresolution.zip" -DestinationPath "C:\timerresolution\" -Force >nul 2>&1
+powershell -NoProfile Expand-Archive "%temp%\timerresolution.zip" -DestinationPath "C:\timerresolution\" -Force >> TR_Log.txt
 
-timeout /t 2 /nobreak >nul
+:: Buscar el exe automáticamente
+set exePath=C:\timerresolution\SetTimerResolution.exe
 
-:: Crear script oculto para inicio
+if not exist "%exePath%" (
+    for /r "C:\timerresolution\" %%f in (SetTimerResolution.exe) do set exePath=%%f
+)
+
+:: Verificar exe
+if not exist "%exePath%" (
+    echo No se encontro el exe de Timer Resolution >> TR_Log.txt
+    exit
+)
+
+:: Crear VBS oculto
 echo Set WshShell = CreateObject("WScript.Shell") > "C:\timerresolution\start_hidden.vbs"
-echo WshShell.Run "C:\timerresolution\SetTimerResolution.exe 0.5", 0 >> "C:\timerresolution\start_hidden.vbs"
+echo WshShell.Run "%exePath% 0.5", 0 >> "C:\timerresolution\start_hidden.vbs"
 
-:: Ejecutar ahora (oculto)
+:: Ejecutar ahora
 start "" "C:\timerresolution\start_hidden.vbs"
 
-:: Agregar al inicio (100% automático)
-copy "C:\timerresolution\start_hidden.vbs" "%appdata%\Microsoft\Windows\Start Menu\Programs\Startup\" /Y >nul
+:: Agregar al inicio
+copy "C:\timerresolution\start_hidden.vbs" "%appdata%\Microsoft\Windows\Start Menu\Programs\Startup\" /Y >> TR_Log.txt
 
-echo.
-echo ✔ Timer Resolution 0.5ms aplicado y configurado al inicio
-timeout /t 2 >nul
-exit
-echo.
-@echo off
-pause
-
-
-
-
-
-
-
-
-
-
-
-
+timeout /t 3 /nobreak >nul
